@@ -22,7 +22,7 @@ function saveShortenedUrls(urls) {
 }
 
 export function shortenUrls(urlInputs) {
-  // urlInputs: [{ longUrl, validity, customCode }]
+  
   const results = [];
   const allUrls = getAllShortenedUrls();
   const existingShortcodes = new Set(allUrls.map(u => u.shortcode));
@@ -33,7 +33,7 @@ export function shortenUrls(urlInputs) {
     if (!expiryMinutes || expiryMinutes <= 0) expiryMinutes = 30;
     const expiryDate = new Date(Date.now() + expiryMinutes * 60000);
 
-    // Validate URL
+    
     try {
       new URL(longUrl);
     } catch {
@@ -42,7 +42,7 @@ export function shortenUrls(urlInputs) {
       return;
     }
 
-    // Validate custom shortcode
+     
     if (shortcode) {
       if (!VALID_SHORTCODE_REGEX.test(shortcode)) {
         logger.warn(`Invalid shortcode: ${shortcode}`);
@@ -58,7 +58,7 @@ export function shortenUrls(urlInputs) {
       shortcode = generateShortcode(existingShortcodes);
     }
 
-    // Save
+   
     const shortUrlObj = {
       longUrl,
       shortcode,
@@ -130,7 +130,7 @@ class URLShortenerService {
       result += characters.charAt(Math.floor(Math.random() * characters.length));
     }
     
-    // Ensure uniqueness
+ 
     if (this.urls.some(url => url.shortCode === result)) {
       logger.debug('Generated shortcode collision, regenerating', { shortCode: result });
       return this.generateShortCode();
@@ -150,7 +150,7 @@ class URLShortenerService {
   }
 
   validateShortCode(shortCode) {
-    // Alphanumeric only, 3-20 characters
+     
     const regex = /^[a-zA-Z0-9]{3,20}$/;
     return regex.test(shortCode);
   }
@@ -170,14 +170,14 @@ class URLShortenerService {
       validityMinutes 
     });
 
-    // Validate original URL
+    
     if (!this.validateURL(originalUrl)) {
       const error = 'Invalid URL format';
       logger.warn('URL shortening failed - invalid format', { originalUrl });
       throw new Error(error);
     }
 
-    // Handle custom shortcode
+     
     let shortCode;
     if (customShortCode) {
       if (!this.validateShortCode(customShortCode)) {
@@ -197,11 +197,11 @@ class URLShortenerService {
       shortCode = this.generateShortCode();
     }
 
-    // Calculate expiry date
+    
     const expiryDate = new Date();
     expiryDate.setMinutes(expiryDate.getMinutes() + validityMinutes);
 
-    // Create URL object
+     
     const urlData = {
       id: Date.now() + Math.random(),
       originalUrl,
@@ -246,7 +246,7 @@ class URLShortenerService {
       throw new Error('Short URL is inactive');
     }
 
-    // Increment click count
+    
     urlData.clicks++;
     this.saveURLsToStorage();
 
